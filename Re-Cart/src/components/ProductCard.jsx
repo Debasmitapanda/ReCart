@@ -4,7 +4,7 @@ import { useWishlist } from '../context/WishlistContext';
 
 export default function ProductCard({ product }) {
   const { toggleWishlist, isInWishlist } = useWishlist();
-  const isSaved = isInWishlist(product.id);
+  const isSaved = isInWishlist(product._id || product.id);
 
   return (
     <div className="product-card" style={{ position: 'relative' }}>

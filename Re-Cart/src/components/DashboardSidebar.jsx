@@ -5,29 +5,30 @@ export default function DashboardSidebar({ role }) {
   const links = {
     buyer: [
       { name: 'Dashboard', href: '/dashboard/buyer' },
+      { name: 'Orders', href: '/orders' },
       { name: 'Browse Products', href: '/products' },
       { name: 'Wishlist', href: '/wishlist' },
-      { name: 'Orders', href: '/orders' },
       { name: 'Cart', href: '/cart' },
     ],
     seller: [
       { name: 'Dashboard', href: '/dashboard/seller' },
       { name: 'Add Product', href: '/products/add' },
+      { name: 'Browse Products', href: '/products' },
       { name: 'My Products', href: '/dashboard/seller/products' },
       { name: 'Earnings', href: '/dashboard/seller/earnings' },
-      { name: 'Notifications', href: '/dashboard/seller' },
     ],
     agent: [
       { name: 'Dashboard', href: '/dashboard/agent' },
       { name: 'Assigned Deliveries', href: '/dashboard/agent/deliveries' },
+      { name: 'Browse Products', href: '/products' },
       { name: 'Update Status', href: '/dashboard/agent/update-status' },
     ],
     admin: [
       { name: 'Dashboard', href: '/dashboard/admin' },
       { name: 'User Management', href: '/dashboard/admin' },
+      { name: 'Browse Products', href: '/products' },
       { name: 'Product Moderation', href: '/dashboard/admin' },
       { name: 'Transactions', href: '/dashboard/admin' },
-      { name: 'Analytics', href: '/dashboard/admin' },
     ],
   };
 

@@ -1,53 +1,58 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import apiClient from '../api/axios';
 
 const WishlistContext = createContext();
 
 export function WishlistProvider({ children }) {
-  const [wishlistItems, setWishlistItems] = useState(() => {
-    const saved = localStorage.getItem('wishlistItems');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        return parsed.map(item => {
-          if (item.images) {
-            item.images = item.images.map(img => img && img.startsWith('blob:') ? 'https://via.placeholder.com/300?text=Image+Expired' : img);
-          }
-          if (item.image && typeof item.image === 'string' && item.image.startsWith('blob:')) {
-            item.image = 'https://via.placeholder.com/300?text=Image+Expired';
-          }
-          return item;
-        });
-      } catch (e) {
-        return [];
-      }
-    }
-    return [];
-  });
+  const [wishlistItems, setWishlistItems] = useState([]);
 
   useEffect(() => {
-    localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
-  }, [wishlistItems]);
-
-  const toggleWishlist = (product) => {
-    setWishlistItems(prev => {
-      const exists = prev.some(item => item.id === product.id);
-      if (exists) {
-        return prev.filter(item => item.id !== product.id);
+    const fetchWishlist = async () => {
+      try {
+        const { data } = await apiClient.get('/api/wishlist');
+        const formatted = data.products ? data.products : [];
+        setWishlistItems(formatted);
+      } catch (error) {
+        console.error('Failed to fetch wishlist', error);
       }
-      return [...prev, product];
-    });
+    };
+    
+    if (localStorage.getItem('token')) {
+      fetchWishlist();
+    }
+  }, []);
+
+  const toggleWishlist = async (product) => {
+    const productId = product.id || product._id;
+    try {
+      const exists = wishlistItems.some(item => (item.id || item._id)?.toString() === productId?.toString());
+      if (exists) {
+        await apiClient.delete('/api/wishlist', { data: { productId } });
+        setWishlistItems(prev => prev.filter(item => (item.id || item._id)?.toString() !== productId?.toString()));
+      } else {
+        await apiClient.post('/api/wishlist', { productId });
+        setWishlistItems(prev => [...prev, product]);
+      }
+    } catch (error) {
+      console.error('Failed to toggle wishlist', error);
+    }
   };
 
   const clearWishlist = () => {
     setWishlistItems([]);
   };
 
-  const removeFromWishlist = (productId) => {
-    setWishlistItems(prev => prev.filter(item => item.id !== productId));
+  const removeFromWishlist = async (productId) => {
+    try {
+      await apiClient.delete('/api/wishlist', { data: { productId } });
+      setWishlistItems(prev => prev.filter(item => (item.id || item._id)?.toString() !== productId?.toString()));
+    } catch (error) {
+      console.error('Failed to remove from wishlist', error);
+    }
   };
 
   const isInWishlist = (productId) => {
-    return wishlistItems.some(item => item.id === productId);
+    return wishlistItems.some(item => (item.id || item._id)?.toString() === productId?.toString());
   };
 
   return (

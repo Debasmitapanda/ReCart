@@ -9,7 +9,7 @@ export default function Wishlist() {
 
   // Filter out any ghost items that were deleted from the catalog
   const validWishlistItems = wishlistItems.filter(item => 
-    products.some(p => p.id === item.id)
+    products.some(p => (p._id || p.id)?.toString() === (item._id || item.id)?.toString())
   );
 
   return (

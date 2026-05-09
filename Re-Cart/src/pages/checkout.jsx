@@ -29,19 +29,15 @@ export default function Checkout() {
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 800));
       
-      cartItems.forEach((item, index) => {
-        const newOrder = {
-          id: `ORD${Date.now().toString().slice(-5)}${index}`,
-          product: `${item.qty}x ${item.name}`,
-          status: 'Seller Confirmed',
-          date: new Date().toISOString().split('T')[0],
+      for (const item of cartItems) {
+        const orderPayload = {
+          productId: item.id || item._id,
+          deliveryAddress: form.address,
           amount: item.price * item.qty,
-          customer: form.name,
-          address: form.address,
-          contact: form.email
+          deliveryCharge: item.deliveryCharge || 0
         };
-        addOrder(newOrder);
-      });
+        await addOrder(orderPayload);
+      }
 
       console.log('Order placed locally:', { ...form, items: cartItems });
       clearCart();

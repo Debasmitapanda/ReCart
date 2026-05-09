@@ -60,7 +60,7 @@ export const deleteProduct = async (req, res) => {
       return res.status(401).json({ message: 'Not authorized' });
     }
 
-    await product.remove();
+    await product.deleteOne();
     res.json({ message: 'Product removed' });
   } catch (error) {
     res.status(500).json({ message: error.message });

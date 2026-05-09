@@ -1,51 +1,47 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { mockProducts } from '../data/mockProducts';
+import apiClient from '../api/axios';
 
 const ProductsContext = createContext();
 
 export function ProductsProvider({ children }) {
-  const [products, setProducts] = useState(() => {
-    const savedProducts = localStorage.getItem('products_v4');
-    if (savedProducts) {
-      try {
-        const parsed = JSON.parse(savedProducts);
-        return parsed.map(product => {
-          if (product.images) {
-             product.images = product.images.map(img => 
-               img && img.startsWith('blob:') ? 'https://via.placeholder.com/300?text=Image+Expired' : img
-             );
-          }
-          if (product.image && typeof product.image === 'string' && product.image.startsWith('blob:')) {
-             product.image = 'https://via.placeholder.com/300?text=Image+Expired';
-          }
-          return product;
-        });
-      } catch (e) {
-        return mockProducts;
-      }
-    }
-    // Fallback to static mock products if local storage is empty
-    return mockProducts;
-  });
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    localStorage.setItem('products_v4', JSON.stringify(products));
-  }, [products]);
-
-  const addProduct = (newProduct) => {
-    const productWithId = {
-      ...newProduct,
-      id: Date.now(), // Generate a unique ID for the new product
+    const fetchProducts = async () => {
+      try {
+        const { data } = await apiClient.get('/api/products');
+        setProducts(data);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      } finally {
+        setLoading(false);
+      }
     };
-    setProducts((prevProducts) => [productWithId, ...prevProducts]);
+
+    fetchProducts();
+  }, []);
+
+  const addProduct = async (newProduct) => {
+    setProducts((prev) => [newProduct, ...prev]);
   };
 
-  const deleteProduct = (id) => {
-    setProducts((prevProducts) => prevProducts.filter(p => p.id !== id));
+  const deleteProduct = async (id) => {
+    try {
+      await apiClient.delete(`/api/products/${id}`);
+      setProducts((prev) => prev.filter(p => p._id !== id));
+    } catch (error) {
+      console.error('Error deleting product', error);
+    }
   };
 
-  const updateProduct = (id, updatedData) => {
-    setProducts((prevProducts) => prevProducts.map(p => p.id === id || p.id.toString() === id.toString() ? { ...p, ...updatedData } : p));
+  const updateProduct = async (id, updatedData) => {
+    try {
+      const { data } = await apiClient.put(`/api/products/${id}`, updatedData);
+      setProducts((prev) => prev.map(p => p._id === id ? data : p));
+    } catch (error) {
+      console.error('Error updating product', error);
+    }
   };
 
   return (

@@ -1,13 +1,42 @@
-// components/NotificationBell.js
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useOrders } from '../context/OrdersContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function NotificationBell() {
   const [open, setOpen] = useState(false);
-  const [notifications] = useState([
-    { id: 1, message: 'Your order ORD001 has been shipped.', time: '2h ago' },
-    { id: 2, message: 'Seller confirmed your purchase of Dell Laptop.', time: '1d ago' },
-    { id: 3, message: 'Delivery agent picked up iPhone 12.', time: '3d ago' },
-  ]);
+  const [notifications, setNotifications] = useState([]);
+  const { orders } = useOrders();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const latestOrder = orders && orders.length > 0 ? orders[0] : null;
+    const productName = latestOrder ? (latestOrder.product?.name || latestOrder.product || 'Unknown Product') : 'Dell Laptop';
+    
+    const role = user?.role || 'buyer';
+    let mockData = [];
+
+    if (role === 'buyer') {
+      mockData = [
+        { id: 1, message: `Your order for "${productName}" has been shipped.`, time: '2h ago' },
+        { id: 2, message: 'Price drop alert: The iPad Pro you viewed is now 5% off.', time: '1d ago' },
+        { id: 3, message: 'Delivery agent picked up your item.', time: '3d ago' },
+      ];
+    } else if (role === 'seller') {
+      mockData = [
+        { id: 1, message: `New order received for "${productName}".`, time: '2h ago' },
+        { id: 2, message: 'Your payment for the last sale has been processed.', time: '1d ago' },
+        { id: 3, message: 'Reminder: Update tracking for pending orders.', time: '3d ago' },
+      ];
+    } else if (role === 'agent') {
+      mockData = [
+        { id: 1, message: `New delivery assigned: "${productName}".`, time: '2h ago' },
+        { id: 2, message: 'Buyer requested contact regarding delivery.', time: '1d ago' },
+        { id: 3, message: 'Weekly performance report available.', time: '3d ago' },
+      ];
+    }
+
+    setNotifications(mockData);
+  }, [orders, user]);
 
   const unreadCount = notifications.length;
 

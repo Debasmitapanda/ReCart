@@ -1,60 +1,86 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import apiClient from '../api/axios';
 
 const OrdersContext = createContext();
 
-const initialDummyOrders = [
-  {
-    id: 'ORD001',
-    product: 'iPhone 12',
-    status: 'Out for Delivery',
-    date: '2026-05-01',
-    amount: 45000,
-    customer: 'John Doe',
-    address: '123 Tech Park, Bengaluru',
-    contact: '+91 9876543210'
-  },
-  {
-    id: 'ORD002',
-    product: 'Dell Laptop',
-    status: 'Delivered',
-    date: '2026-04-28',
-    amount: 30000,
-    customer: 'Alice Smith',
-    address: '456 MG Road, Mumbai',
-    contact: '+91 8765432109'
-  },
-  {
-    id: 'ORD003',
-    product: 'Motorbike',
-    status: 'Seller Confirmed',
-    date: '2026-05-02',
-    amount: 60000,
-    customer: 'Bob Johnson',
-    address: '789 Link Road, Delhi',
-    contact: '+91 7654321098'
-  },
-];
-
 export function OrdersProvider({ children }) {
-  const [orders, setOrders] = useState(() => {
-    const saved = localStorage.getItem('orders');
-    return saved ? JSON.parse(saved) : initialDummyOrders;
-  });
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    localStorage.setItem('orders', JSON.stringify(orders));
-  }, [orders]);
+    const fetchOrders = async () => {
+      try {
+        const userStr = localStorage.getItem('user');
+        if (!userStr) return;
+        
+        // Fetch buyer, seller, and agent orders and merge
+        const [buyerRes, sellerRes, agentRes] = await Promise.all([
+          apiClient.get('/api/orders/buyer').catch(() => ({ data: [] })),
+          apiClient.get('/api/orders/seller').catch(() => ({ data: [] })),
+          apiClient.get('/api/orders/agent').catch(() => ({ data: [] }))
+        ]);
+        
+        const allOrders = [...buyerRes.data, ...sellerRes.data, ...agentRes.data];
+        // Deduplicate by ID
+        const uniqueOrdersMap = new Map();
+        allOrders.forEach(o => uniqueOrdersMap.set(o._id, o));
+        const uniqueOrders = Array.from(uniqueOrdersMap.values());
+        
+        const formatted = uniqueOrders.map(o => ({
+          _id: o._id,
+          id: o._id,
+          product: o.product || { name: 'Unknown Product' },
+          status: o.status || 'Pending',
+          date: new Date(o.createdAt).toISOString().split('T')[0],
+          amount: o.amount || 0,
+          customer: o.buyer?.name || 'Unknown',
+          address: o.deliveryAddress || 'N/A',
+          contact: o.buyer?.email || 'N/A'
+        }));
+        
+        setOrders(formatted);
+      } catch (error) {
+        console.error('Failed to fetch orders:', error);
+      }
+    };
+    
+    if (localStorage.getItem('token')) {
+      fetchOrders();
+    }
+  }, []);
 
-  const addOrder = (order) => {
-    setOrders(prev => [order, ...prev]);
+  const addOrder = async (orderPayload) => {
+    try {
+      const res = await apiClient.post('/api/orders', orderPayload);
+      const o = res.data;
+      
+      const newFormattedOrder = {
+          _id: o._id,
+          id: o._id,
+          product: o.product || { name: 'Unknown Product' },
+          status: o.status || 'Pending',
+          date: new Date(o.createdAt).toISOString().split('T')[0],
+          amount: o.amount || 0,
+          customer: o.buyer?.name || 'Unknown',
+          address: o.deliveryAddress || 'N/A',
+          contact: o.buyer?.email || 'N/A'
+      };
+      
+      setOrders(prev => [newFormattedOrder, ...prev]);
+    } catch (error) {
+      console.error('Error placing order:', error);
+      throw error;
+    }
   };
 
-  const updateOrderStatus = (id, newStatus) => {
-    setOrders(prev => 
-      prev.map(order => 
-        order.id === id ? { ...order, status: newStatus } : order
-      )
-    );
+  const updateOrderStatus = async (id, newStatus) => {
+    try {
+      await apiClient.put(`/api/orders/${id}/status`, { status: newStatus });
+      setOrders(prev => prev.map(order => 
+        (order.id === id || order._id === id) ? { ...order, status: newStatus } : order
+      ));
+    } catch (error) {
+      console.error('Error updating status', error);
+    }
   };
 
   return (

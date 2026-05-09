@@ -2,27 +2,28 @@
 
 :root {
   /* Vibrant & Premium Palette */
-  --primary: #4F46E5; /* Indigo */
-  --primary-hover: #4338CA;
-  --secondary: #10B981; /* Emerald */
-  --secondary-hover: #059669;
+  --primary: #6366F1; /* Brighter Indigo */
+  --primary-hover: #4F46E5;
+  --secondary: #14B8A6; /* Vibrant Teal */
+  --secondary-hover: #0D9488;
   --accent: #F43F5E; /* Rose */
   
-  --bg-light: #F8FAFC;
+  --bg-light: #F0F9FF; /* Soft Sky Blue Tint for global background */
   --bg-white: #FFFFFF;
+  --bg-dashboard-box: linear-gradient(145deg, #E0F2FE, #DBEAFE); /* Light Blue Dashboard Boxes */
   
   --text-main: #0F172A; /* Slate 900 */
-  --text-muted: #64748B; /* Slate 500 */
+  --text-muted: #475569; /* Slate 600 */
   
-  --border-color: #E2E8F0;
+  --border-color: #BAE6FD; /* Sky 200 */
   
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-hover: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(56 189 248 / 0.1), 0 2px 4px -2px rgb(56 189 248 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(56 189 248 / 0.15), 0 4px 6px -4px rgb(56 189 248 / 0.1);
+  --shadow-hover: 0 20px 25px -5px rgb(56 189 248 / 0.2), 0 8px 10px -6px rgb(56 189 248 / 0.1);
   
-  --radius-md: 0.5rem;
-  --radius-lg: 1rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.25rem;
   --radius-full: 9999px;
   
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -31,8 +32,9 @@
 
 /* Dark Mode Theme */
 html.dark:root, .dark {
-  --bg-light: #0F172A; /* Slate 900 */
+  --bg-light: #0F172A; /* Deep Space Slate */
   --bg-white: #1E293B; /* Slate 800 */
+  --bg-dashboard-box: linear-gradient(145deg, #334155, #1E293B); /* Slate Grey Dashboard Boxes */
   
   --text-main: #F8FAFC; /* Slate 50 */
   --text-muted: #94A3B8; /* Slate 400 */
@@ -50,7 +52,7 @@ html.dark:root, .dark {
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background-color: var(--bg-light);
-  background-image: linear-gradient(rgba(248, 250, 252, 0.85), rgba(248, 250, 252, 0.85)), url('/doodles.png');
+  background-image: linear-gradient(135deg, rgba(224, 242, 254, 0.85) 0%, rgba(240, 249, 255, 0.8) 100%), url('/doodles.png');
   background-size: cover, 400px;
   background-repeat: no-repeat, repeat;
   background-attachment: fixed;
@@ -60,7 +62,7 @@ body {
 }
 
 html.dark body {
-  background-image: linear-gradient(rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.92)), url('/doodles.png');
+  background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%), url('/doodles.png');
 }
 
 a {
@@ -186,6 +188,47 @@ h2, .heading-secondary {
   justify-content: space-between;
   align-items: center;
   box-shadow: var(--shadow-sm);
+}
+
+html.dark .navbar {
+  background: rgba(30, 41, 59, 0.85);
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 1rem;
+
+  background: linear-gradient(
+    45deg,
+    var(--primary),
+    #8B5CF6,
+    #34D399,
+    var(--primary)
+  );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Dark mode gradient */
+/* html.dark .hero-title {
+  background: linear-gradient(
+    45deg,
+    #ffffff,
+    #cbd5e1,
+    #94a3b8,
+    #ffffff
+  );
+} */
+html.dark .hero-title {
+  background: linear-gradient(
+    45deg,
+    #000000,
+    #ff0080,
+    #7b2ff7,
+    #000000
+  );
 }
 
 .nav-brand {

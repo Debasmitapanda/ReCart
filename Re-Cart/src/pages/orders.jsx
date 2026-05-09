@@ -20,11 +20,22 @@ export default function Orders() {
                 className="order-item"
                 style={{ padding: '1.5rem', background: 'var(--bg-white)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid var(--border-color)' }}
               >
-                <div>
-                  <p style={{ fontWeight: '700', fontSize: '1.2rem', marginBottom: '0.25rem' }}>{order.product}</p>
-                  <p className="text-muted">Order ID: {order.id}</p>
-                  <p className="text-muted">Date: {order.date}</p>
-                  <p className="text-muted">Amount: <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>₹{order.amount}</span></p>
+                <div style={{ display: 'flex', gap: '1.5rem', flex: 1 }}>
+                  {order.product?.images?.length > 0 ? (
+                    <img src={order.product.images[0]} alt={order.product.name} style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-md)', objectFit: 'cover' }} />
+                  ) : order.product?.image ? (
+                    <img src={order.product.image} alt={order.product.name} style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-md)', objectFit: 'cover' }} />
+                  ) : (
+                    <div style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-md)', background: 'var(--bg-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <span className="text-muted" style={{ fontSize: '0.8rem' }}>No Image</span>
+                    </div>
+                  )}
+                  <div>
+                    <p style={{ fontWeight: '700', fontSize: '1.2rem', marginBottom: '0.25rem' }}>{order.product?.name || order.product || 'Unknown Product'}</p>
+                    <p className="text-muted">Order ID: {order._id || order.id}</p>
+                    <p className="text-muted">Date: {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : order.date}</p>
+                    <p className="text-muted">Amount: <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>₹{order.amount}</span></p>
+                  </div>
                 </div>
                 <span
                   style={{

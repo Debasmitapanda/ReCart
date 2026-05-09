@@ -1,33 +1,45 @@
-// components/DashboardNotifications.js
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useOrders } from '../context/OrdersContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function DashboardNotifications() {
   const [notifications, setNotifications] = useState([]);
+  const { orders } = useOrders();
+  const { user } = useAuth();
 
   useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 600));
-        
-        // Mock notifications data
-        const mockData = [
-          { _id: '1', message: 'Your order #1024 has been shipped and is out for delivery!', createdAt: new Date().toISOString() },
-          { _id: '2', message: 'Price drop alert: The iPad Pro you viewed is now 5% off.', createdAt: new Date(Date.now() - 3600000).toISOString() },
-          { _id: '3', message: 'Welcome to Re-Cart! Start browsing our premium collection.', createdAt: new Date(Date.now() - 86400000).toISOString() }
-        ];
-        
-        setNotifications(mockData);
-      } catch (error) {
-        console.error("Failed to fetch notifications:", error);
-      }
-    };
-    fetchNotifications();
-  }, []);
+    // Determine product name from latest order if available
+    const latestOrder = orders && orders.length > 0 ? orders[0] : null;
+    const productName = latestOrder ? (latestOrder.product?.name || latestOrder.product || 'Unknown Product') : 'Sony PlayStation 5';
+
+    const role = user?.role || 'buyer';
+    let mockData = [];
+
+    if (role === 'buyer') {
+      mockData = [
+        { _id: '1', message: `Your order for "${productName}" has been shipped and is out for delivery!`, createdAt: new Date().toISOString() },
+        { _id: '2', message: 'Price drop alert: The iPad Pro you viewed is now 5% off.', createdAt: new Date(Date.now() - 3600000).toISOString() },
+        { _id: '3', message: 'Welcome to Re-Cart! Start browsing our premium collection.', createdAt: new Date(Date.now() - 86400000).toISOString() }
+      ];
+    } else if (role === 'seller') {
+      mockData = [
+        { _id: '1', message: `You have a new order pending for "${productName}". Please review it.`, createdAt: new Date().toISOString() },
+        { _id: '2', message: `Your listing for "${productName}" is getting a lot of views!`, createdAt: new Date(Date.now() - 3600000).toISOString() },
+        { _id: '3', message: 'Welcome to your Seller Dashboard! Start managing your inventory.', createdAt: new Date(Date.now() - 86400000).toISOString() }
+      ];
+    } else if (role === 'agent') {
+      mockData = [
+        { _id: '1', message: `You have been assigned a new delivery for "${productName}".`, createdAt: new Date().toISOString() },
+        { _id: '2', message: 'A new optimized route is available for your pending deliveries.', createdAt: new Date(Date.now() - 3600000).toISOString() },
+        { _id: '3', message: 'Welcome to the Delivery Agent Dashboard.', createdAt: new Date(Date.now() - 86400000).toISOString() }
+      ];
+    }
+    
+    setNotifications(mockData);
+  }, [orders, user]);
 
   return (
-    <div className="notifications-panel" style={{ background: 'var(--bg-white)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)' }}>
+    <div className="notifications-panel" style={{ background: 'var(--bg-dashboard-box)', padding: '1.5rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', border: '1px solid var(--border-color)' }}>
       <h2 className="heading-secondary">Notifications</h2>
       {notifications.length === 0 ? (
         <p className="text-muted">No new notifications</p>

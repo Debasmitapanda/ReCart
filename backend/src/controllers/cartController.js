@@ -30,3 +30,12 @@ export const removeFromCart = async (req, res) => {
   await cart.save();
   res.json(cart);
 };
+
+export const clearCart = async (req, res) => {
+  const cart = await Cart.findOne({ buyer: req.user._id });
+  if (cart) {
+    cart.items = [];
+    await cart.save();
+  }
+  res.json({ message: 'Cart cleared' });
+};

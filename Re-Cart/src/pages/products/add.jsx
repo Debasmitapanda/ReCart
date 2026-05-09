@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
 import Footer from '../../components/Footer';
 import { useProducts } from '../../context/ProductsContext';
+import apiClient from '../../api/axios';
 
 export default function AddProduct() {
   const navigate = useNavigate();
@@ -15,22 +16,25 @@ export default function AddProduct() {
     image: null
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { addProduct } = useProducts();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    
     try {
-      let imageUrl = null;
+      let uploadedImageUrl = null;
       
-      // Convert physical image to a permanent Base64 string for local storage
+      // Upload image to backend/cloudinary if selected
       if (form.image) {
-        imageUrl = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.onerror = reject;
-          reader.readAsDataURL(form.image);
-        });
+        const formData = new FormData();
+        formData.append('image', form.image);
+        
+        const uploadRes = await apiClient.post('/api/upload', formData);
+        uploadedImageUrl = uploadRes.data.url;
       }
 
       const newProduct = {
@@ -39,18 +43,15 @@ export default function AddProduct() {
         price: Number(form.price),
         condition: form.condition,
         description: form.description,
-        images: imageUrl ? [imageUrl] : [],
-        seller: { name: 'You (Local Seller)', rating: 5.0 },
-        reviews: [],
+        images: uploadedImageUrl ? [uploadedImageUrl] : [],
         age: 'Brand New',
         deliveryCharge: 0
       };
 
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 800));
+      const productRes = await apiClient.post('/api/products', newProduct);
       
-      // Save globally
-      addProduct(newProduct);
+      // Save globally to context
+      addProduct(productRes.data);
       
       alert('Product added successfully!');
       
@@ -58,7 +59,9 @@ export default function AddProduct() {
       navigate('/dashboard/seller/products');
     } catch (error) {
       console.error('Error adding product:', error);
-      alert('Failed to add product.');
+      alert('Failed to add product: ' + error.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -146,8 +149,8 @@ export default function AddProduct() {
             </div>
           </div>
 
-          <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem', padding: '1rem' }}>
-            Publish Product
+          <button type="submit" className="btn btn-primary" disabled={isSubmitting} style={{ width: '100%', marginTop: '1rem', padding: '1rem', opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}>
+            {isSubmitting ? 'Publishing...' : 'Publish Product'}
           </button>
         </form>
       </main>

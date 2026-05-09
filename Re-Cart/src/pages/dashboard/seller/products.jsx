@@ -43,8 +43,10 @@ export default function MyProducts() {
                     </td>
                   </tr>
                 ) : (
-                  sellerProducts.map((product, index) => (
-                    <tr key={product.id} style={{ borderBottom: index !== sellerProducts.length - 1 ? '1px solid var(--border-color)' : 'none' }}>
+                  sellerProducts.map((product, index) => {
+                    const productId = product._id || product.id;
+                    return (
+                    <tr key={productId} style={{ borderBottom: index !== sellerProducts.length - 1 ? '1px solid var(--border-color)' : 'none' }}>
                       <td style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                         <img 
                           src={(product.images && product.images.length > 0) ? product.images[0] : (product.image || 'https://via.placeholder.com/150?text=No+Image')} 
@@ -72,7 +74,7 @@ export default function MyProducts() {
                           <button 
                             className="btn" 
                             style={{ padding: '0.5rem 1rem', background: 'var(--bg-light)', border: '1px solid var(--border-color)', color: 'var(--text-main)' }}
-                            onClick={() => window.location.href = `/products/edit/${product.id}`}
+                            onClick={() => window.location.href = `/products/edit/${productId}`}
                           >
                             Edit
                           </button>
@@ -81,9 +83,9 @@ export default function MyProducts() {
                             style={{ padding: '0.5rem 1rem' }}
                             onClick={() => {
                               if (window.confirm('Are you sure you want to delete this product?')) {
-                                deleteProduct(product.id);
-                                removeFromWishlist(product.id);
-                                removeFromCart(product.id);
+                                deleteProduct(productId);
+                                removeFromWishlist(productId);
+                                removeFromCart(productId);
                               }
                             }}
                           >
@@ -92,7 +94,7 @@ export default function MyProducts() {
                         </div>
                       </td>
                     </tr>
-                  ))
+                  )})
                 )}
               </tbody>
             </table>

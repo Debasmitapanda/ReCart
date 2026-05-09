@@ -1,57 +1,74 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import apiClient from '../api/axios';
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  const [cartItems, setCartItems] = useState(() => {
-    const saved = localStorage.getItem('cartItems');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        return parsed.map(item => {
-          if (item.images) {
-            item.images = item.images.map(img => img && img.startsWith('blob:') ? 'https://via.placeholder.com/300?text=Image+Expired' : img);
-          }
-          if (item.image && typeof item.image === 'string' && item.image.startsWith('blob:')) {
-            item.image = 'https://via.placeholder.com/300?text=Image+Expired';
-          }
-          return item;
-        });
-      } catch (e) {
-        return [];
-      }
-    }
-    return [];
-  });
+  const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  const addToCart = (product) => {
-    setCartItems(prev => {
-      const productId = product.id || product._id;
-      const existing = prev.find(item => (item.id || item._id)?.toString() === productId?.toString());
-      if (existing) {
-        return prev.map(item => 
-          (item.id || item._id)?.toString() === productId?.toString() ? { ...item, qty: item.qty + 1 } : item
-        );
+    const fetchCart = async () => {
+      try {
+        const { data } = await apiClient.get('/api/cart');
+        const formattedCart = data.items ? data.items.map(item => ({
+          ...item.product,
+          qty: item.quantity
+        })) : [];
+        setCartItems(formattedCart);
+      } catch (error) {
+        console.error('Failed to fetch cart:', error);
       }
-      return [...prev, { ...product, qty: 1 }];
-    });
+    };
+    
+    // Only fetch if logged in (token exists)
+    if (localStorage.getItem('token')) {
+      fetchCart();
+    }
+  }, []);
+
+  const addToCart = async (product) => {
+    try {
+      const productId = product.id || product._id;
+      await apiClient.post('/api/cart', { productId, quantity: 1 });
+      
+      setCartItems(prev => {
+        const existing = prev.find(item => (item.id || item._id)?.toString() === productId?.toString());
+        if (existing) {
+          return prev.map(item => 
+            (item.id || item._id)?.toString() === productId?.toString() ? { ...item, qty: item.qty + 1 } : item
+          );
+        }
+        return [...prev, { ...product, qty: 1 }];
+      });
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    }
   };
 
-  const updateQty = (id, qty) => {
+  const updateQty = async (id, qty) => {
     if (qty < 1) return;
+    // Note: The backend cartController doesn't have an explicit update route, 
+    // it relies on addToCart to increment. To update exact qty, we simulate it 
+    // locally for now to keep the UI smooth.
     setCartItems(prev => prev.map(item => (item.id || item._id)?.toString() === id?.toString() ? { ...item, qty } : item));
   };
 
-  const removeItem = (id) => {
-    setCartItems(prev => prev.filter(item => (item.id || item._id)?.toString() !== id?.toString()));
+  const removeItem = async (id) => {
+    try {
+      await apiClient.delete('/api/cart', { data: { productId: id } });
+      setCartItems(prev => prev.filter(item => (item.id || item._id)?.toString() !== id?.toString()));
+    } catch (error) {
+      console.error('Error removing item:', error);
+    }
   };
 
-  const clearCart = () => {
-    setCartItems([]);
+  const clearCart = async () => {
+    try {
+      await apiClient.delete('/api/cart/clear');
+      setCartItems([]);
+    } catch (error) {
+      console.error('Error clearing cart:', error);
+    }
   };
 
   return (

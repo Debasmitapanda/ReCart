@@ -56,15 +56,17 @@ export default function UserProfile({ role }) {
 
   return (
     <div style={{
-      background: 'var(--bg-white)',
+      background: 'var(--bg-dashboard-box)',
       padding: '2rem',
       borderRadius: 'var(--radius-lg)',
-      boxShadow: 'var(--shadow-sm)',
+      boxShadow: 'var(--shadow-md)',
       display: 'flex',
       alignItems: 'center',
       gap: '2rem',
       marginBottom: '2rem',
-      border: '1px solid var(--border-color)'
+      border: '1px solid var(--border-color)',
+      position: 'relative',
+      overflow: 'hidden'
     }}>
       <img 
         src={user.avatar} 
