@@ -3,12 +3,18 @@ import DashboardSidebar from '../../../components/DashboardSidebar';
 import { useProducts } from '../../../context/ProductsContext';
 import { useWishlist } from '../../../context/WishlistContext';
 import { useCart } from '../../../context/CartContext';
+import { useAuth } from '../../../context/AuthContext';
 
 export default function MyProducts() {
   const { products, deleteProduct } = useProducts();
   const { removeFromWishlist } = useWishlist();
   const { removeItem: removeFromCart } = useCart();
-  const sellerProducts = products; 
+  const { user } = useAuth();
+  
+  const sellerProducts = products.filter(p => {
+    const sellerId = p.seller?._id || p.seller;
+    return sellerId === user?._id;
+  });
 
   return (
     <div className="page-wrapper">

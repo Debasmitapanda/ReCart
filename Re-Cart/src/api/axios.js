@@ -1,8 +1,9 @@
 import axios from 'axios';
 
 const API_URL =
-  import.meta.env.VITE_BACKEND_URL ||
-  'https://recart-backend-lcry.onrender.com';
+  import.meta.env.VITE_BACKEND_URL ;
+  // ||
+  // 'https://recart-backend-lcry.onrender.com';
 
 const apiClient = axios.create({
   baseURL: API_URL,

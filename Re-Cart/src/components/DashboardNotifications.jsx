@@ -8,8 +8,13 @@ export default function DashboardNotifications() {
   const { user } = useAuth();
 
   useEffect(() => {
-    // Determine product name from latest order if available
-    const latestOrder = orders && orders.length > 0 ? orders[0] : null;
+    // Filter orders based on user role to ensure they only see their own product activity
+    let roleOrders = orders;
+    if (user?.role === 'seller') {
+      roleOrders = orders.filter(o => o.sellerId === user?._id);
+    }
+    
+    const latestOrder = roleOrders && roleOrders.length > 0 ? roleOrders[0] : null;
     const productName = latestOrder ? (latestOrder.product?.name || latestOrder.product || 'Unknown Product') : 'Sony PlayStation 5';
 
     const role = user?.role || 'buyer';

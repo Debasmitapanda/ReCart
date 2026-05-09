@@ -36,7 +36,7 @@ export default function Navbar() {
 
   return (
     <nav className="navbar" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center' }}>
-      {/* Left: Logo and Products */}
+      {/* Left: Logo and Mobile Toggle */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flex: isMobileMenuOpen ? '1 1 100%' : '0 1 auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', width: isMobileMenuOpen ? '100%' : 'auto', alignItems: 'center' }}>
           <Link to="/" className="nav-brand animate-gradient" style={{ fontWeight: 900, background: 'linear-gradient(45deg, var(--primary), #8B5CF6, var(--secondary), var(--primary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: '1.75rem' }}>
@@ -52,64 +52,61 @@ export default function Navbar() {
             </button>
           </div>
         </div>
-
-        {/* Products Dropdown (Desktop or inside mobile menu) */}
-        <div className={`nav-links ${isMobileMenuOpen ? 'mobile-open' : ''}`} style={{ display: isMobileMenuOpen ? 'block' : 'block', margin: 0 }}>
-          <div 
-            style={{ position: 'relative' }}
-            onMouseEnter={() => setShowDropdown(true)}
-            onMouseLeave={() => setShowDropdown(false)}
-          >
-            <Link to="/products" className="nav-link" style={{ display: 'inline-block', padding: '0.5rem 0', fontWeight: 600 }}>
-              Products
-            </Link>
-            
-            {showDropdown && (
-              <div style={{
-                position: 'absolute',
-                top: '100%',
-                left: '0',
-                background: darkMode ? 'rgba(30, 41, 59, 0.95)' : 'rgba(255, 255, 255, 0.85)',
-                backdropFilter: 'blur(12px)',
-                border: '1px solid var(--border-color)',
-                borderRadius: 'var(--radius-md)',
-                padding: '0.5rem',
-                display: 'flex',
-                flexDirection: 'column',
-                minWidth: '180px',
-                boxShadow: 'var(--shadow-lg)',
-                zIndex: 100
-              }}>
-                {categories.map(cat => (
-                  <Link 
-                    key={cat} 
-                    to={`/products?category=${cat}`} 
-                    className="nav-link" 
-                    style={{ padding: '0.5rem 1rem', display: 'block', borderRadius: 'var(--radius-sm)' }}
-                    onClick={() => setShowDropdown(false)}
-                  >
-                    {cat}
-                  </Link>
-                ))}
-                <div style={{ borderTop: '1px solid var(--border-color)', margin: '0.25rem 0' }}></div>
-                <Link 
-                  to="/products" 
-                  className="nav-link" 
-                  style={{ padding: '0.5rem 1rem', display: 'block', fontWeight: 'bold' }}
-                  onClick={() => setShowDropdown(false)}
-                >
-                  All Products
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
       </div>
 
-      {/* Middle: Authenticated Navigation Links */}
+      {/* Middle: Navigation Links */}
       <div className={`nav-links ${isMobileMenuOpen ? 'mobile-open' : ''}`} style={{ flex: '1', justifyContent: 'center', display: isMobileMenuOpen ? 'flex' : 'flex' }}>
         {user && (
           <>
+            <div 
+              style={{ position: 'relative' }}
+              onMouseEnter={() => setShowDropdown(true)}
+              onMouseLeave={() => setShowDropdown(false)}
+            >
+              <Link to="/products" className="nav-link" style={{ display: 'inline-block', padding: '0.5rem 1rem', fontWeight: 600 }}>
+                Products
+              </Link>
+              
+              {showDropdown && (
+                <div style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  background: darkMode ? 'rgba(30, 41, 59, 0.95)' : 'rgba(255, 255, 255, 0.85)',
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '0.5rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  minWidth: '180px',
+                  boxShadow: 'var(--shadow-lg)',
+                  zIndex: 100
+                }}>
+                  {categories.map(cat => (
+                    <Link 
+                      key={cat} 
+                      to={`/products?category=${cat}`} 
+                      className="nav-link" 
+                      style={{ padding: '0.5rem 1rem', display: 'block', borderRadius: 'var(--radius-sm)' }}
+                      onClick={() => setShowDropdown(false)}
+                    >
+                      {cat}
+                    </Link>
+                  ))}
+                  <div style={{ borderTop: '1px solid var(--border-color)', margin: '0.25rem 0' }}></div>
+                  <Link 
+                    to="/products" 
+                    className="nav-link" 
+                    style={{ padding: '0.5rem 1rem', display: 'block', fontWeight: 'bold' }}
+                    onClick={() => setShowDropdown(false)}
+                  >
+                    All Products
+                  </Link>
+                </div>
+              )}
+            </div>
             <Link to="/cart" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600, padding: '0.5rem 1rem' }} onClick={() => setIsMobileMenuOpen(false)}>
               Cart
               {cartCount > 0 && (

@@ -16,6 +16,7 @@ export default function DashboardSidebar({ role }) {
       { name: 'Browse Products', href: '/products' },
       { name: 'My Products', href: '/dashboard/seller/products' },
       { name: 'Earnings', href: '/dashboard/seller/earnings' },
+      { name: 'Notifications', href: '/dashboard/seller' },
     ],
     agent: [
       { name: 'Dashboard', href: '/dashboard/agent' },

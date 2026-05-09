@@ -21,15 +21,11 @@ export default function Orders() {
                 style={{ padding: '1.5rem', background: 'var(--bg-white)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid var(--border-color)' }}
               >
                 <div style={{ display: 'flex', gap: '1.5rem', flex: 1 }}>
-                  {order.product?.images?.length > 0 ? (
-                    <img src={order.product.images[0]} alt={order.product.name} style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-md)', objectFit: 'cover' }} />
-                  ) : order.product?.image ? (
-                    <img src={order.product.image} alt={order.product.name} style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-md)', objectFit: 'cover' }} />
-                  ) : (
-                    <div style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-md)', background: 'var(--bg-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <span className="text-muted" style={{ fontSize: '0.8rem' }}>No Image</span>
-                    </div>
-                  )}
+                  <img 
+                    src={(order.product?.images?.length > 0) ? order.product.images[0] : (order.product?.image || 'https://via.placeholder.com/300?text=No+Image')} 
+                    alt={order.product?.name || 'Unknown Product'} 
+                    style={{ width: '80px', height: '80px', borderRadius: 'var(--radius-md)', objectFit: 'cover' }} 
+                  />
                   <div>
                     <p style={{ fontWeight: '700', fontSize: '1.2rem', marginBottom: '0.25rem' }}>{order.product?.name || order.product || 'Unknown Product'}</p>
                     <p className="text-muted">Order ID: {order._id || order.id}</p>

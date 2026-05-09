@@ -34,7 +34,7 @@ export const placeOrder = async (req, res) => {
 // Get agent orders
 export const getAgentOrders = async (req, res) => {
   try {
-    const orders = await Order.find({ deliveryAgent: req.user._id })
+    const orders = await Order.find()
       .populate('product')
       .populate('buyer', 'name email')
       .populate('seller', 'name email');

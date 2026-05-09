@@ -7,6 +7,7 @@ const productSchema = new mongoose.Schema(
     description: { type: String },
     category: { type: String, required: true },
     images: [{ type: String }], // Cloudinary URLs
+    image: { type: String }, // Legacy/Seeded image URLs
     price: { type: Number, required: true },
     age: { type: String }, // e.g. "1 year"
     condition: {

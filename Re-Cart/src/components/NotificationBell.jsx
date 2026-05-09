@@ -9,7 +9,13 @@ export default function NotificationBell() {
   const { user } = useAuth();
 
   useEffect(() => {
-    const latestOrder = orders && orders.length > 0 ? orders[0] : null;
+    // Filter orders based on user role
+    let roleOrders = orders;
+    if (user?.role === 'seller') {
+      roleOrders = orders.filter(o => o.sellerId === user?._id);
+    }
+
+    const latestOrder = roleOrders && roleOrders.length > 0 ? roleOrders[0] : null;
     const productName = latestOrder ? (latestOrder.product?.name || latestOrder.product || 'Unknown Product') : 'Dell Laptop';
     
     const role = user?.role || 'buyer';

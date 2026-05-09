@@ -1,17 +1,31 @@
 import Navbar from '../../../components/Navbar';
 import DashboardSidebar from '../../../components/DashboardSidebar';
+import { useOrders } from '../../../context/OrdersContext';
+import { useAuth } from '../../../context/AuthContext';
 
 export default function Earnings() {
+  const { orders } = useOrders();
+  const { user } = useAuth();
+  
+  const sellerOrders = orders.filter(o => o.sellerId === user?._id);
+  
+  const totalRevenue = sellerOrders.reduce((sum, o) => sum + o.amount, 0);
+  const availablePayout = sellerOrders.filter(o => o.status === 'Delivered').reduce((sum, o) => sum + o.amount, 0);
+  const pendingClearance = totalRevenue - availablePayout;
+  
+  const recentTransactions = sellerOrders.map(o => ({
+    id: o.id.toString().slice(-6).toUpperCase(),
+    item: o.product.name,
+    amount: o.amount,
+    status: o.status === 'Delivered' ? 'Completed' : (o.status === 'Out for Delivery' ? 'Available' : 'Pending'),
+    date: o.date
+  })).reverse();
+
   const earningsData = {
-    totalRevenue: 124500,
-    pendingClearance: 15000,
-    availablePayout: 8500,
-    recentTransactions: [
-      { id: 'TRX-1092', item: 'Sony PlayStation 5', amount: 45000, status: 'Completed', date: 'Oct 12, 2026' },
-      { id: 'TRX-1093', item: 'Dell Laptop', amount: 30000, status: 'Completed', date: 'Oct 10, 2026' },
-      { id: 'TRX-1094', item: 'Mechanical Keyboard', amount: 8500, status: 'Available', date: 'Oct 15, 2026' },
-      { id: 'TRX-1095', item: 'AirPods Pro', amount: 15000, status: 'Pending', date: 'Oct 18, 2026' },
-    ]
+    totalRevenue,
+    pendingClearance,
+    availablePayout,
+    recentTransactions
   };
 
   return (

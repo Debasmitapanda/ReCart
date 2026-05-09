@@ -23,7 +23,10 @@ export function OrdersProvider({ children }) {
         // Deduplicate by ID
         const uniqueOrdersMap = new Map();
         allOrders.forEach(o => uniqueOrdersMap.set(o._id, o));
-        const uniqueOrders = Array.from(uniqueOrdersMap.values());
+        let uniqueOrders = Array.from(uniqueOrdersMap.values());
+        
+        // Sort by latest ordered at top
+        uniqueOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         
         const formatted = uniqueOrders.map(o => ({
           _id: o._id,
@@ -34,7 +37,8 @@ export function OrdersProvider({ children }) {
           amount: o.amount || 0,
           customer: o.buyer?.name || 'Unknown',
           address: o.deliveryAddress || 'N/A',
-          contact: o.buyer?.email || 'N/A'
+          contact: o.buyer?.email || 'N/A',
+          sellerId: o.seller?._id || o.seller
         }));
         
         setOrders(formatted);
