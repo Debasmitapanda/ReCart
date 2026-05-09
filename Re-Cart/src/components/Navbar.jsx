@@ -7,6 +7,7 @@ import { useCart } from '../context/CartContext';
 export default function Navbar() {
   const [darkMode, setDarkMode] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const { cartItems } = useCart();
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
+    setIsMobileMenuOpen(false);
     navigate('/login');
   };
 
@@ -30,13 +32,24 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      {/* Logo */}
-      <Link to="/" className="nav-brand animate-gradient" style={{ fontWeight: 900, background: 'linear-gradient(45deg, var(--primary), #8B5CF6, var(--secondary), var(--primary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-        Re-Cart
-      </Link>
+      {/* Logo and Mobile Toggle Wrapper */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+        <Link to="/" className="nav-brand animate-gradient" style={{ fontWeight: 900, background: 'linear-gradient(45deg, var(--primary), #8B5CF6, var(--secondary), var(--primary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          Re-Cart
+        </Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          {/* Dark Mode Toggle (Mobile) */}
+          <button onClick={() => setDarkMode(!darkMode)} className="btn mobile-menu-btn" style={{ padding: '0.5rem' }}>
+            {darkMode ? '🌙' : '☀️'}
+          </button>
+          <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} aria-label="Toggle Menu">
+            ☰
+          </button>
+        </div>
+      </div>
 
       {/* Navigation Links */}
-      <div className="nav-links">
+      <div className={`nav-links ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
         {user && (
           <>
             <div 
@@ -88,7 +101,7 @@ export default function Navbar() {
                 </div>
               )}
             </div>
-            <Link to="/cart" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <Link to="/cart" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }} onClick={() => setIsMobileMenuOpen(false)}>
               Cart
               {cartCount > 0 && (
                 <span style={{ 
@@ -105,10 +118,10 @@ export default function Navbar() {
                 </span>
               )}
             </Link>
-            <Link to="/orders" className="nav-link">
+            <Link to="/orders" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>
               Orders
             </Link>
-            <Link to={`/dashboard/${user.role}`} className="nav-link">
+            <Link to={`/dashboard/${user.role}`} className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>
               Dashboard
             </Link>
           </>
@@ -116,11 +129,12 @@ export default function Navbar() {
       </div>
 
       {/* Right Side */}
-      <div className="nav-links">
-        {/* Dark Mode Toggle */}
+      <div className={`nav-links ${isMobileMenuOpen ? 'mobile-open' : ''}`} style={{ marginTop: isMobileMenuOpen ? '0' : undefined }}>
+        {/* Dark Mode Toggle (Desktop) */}
         <button
           onClick={() => setDarkMode(!darkMode)}
           className="btn"
+          style={{ display: isMobileMenuOpen ? 'none' : 'inline-flex' }}
         >
           {darkMode ? '🌙' : '☀️'}
         </button>
@@ -130,16 +144,16 @@ export default function Navbar() {
           <button
             onClick={handleLogout}
             className="btn btn-secondary"
-            style={{ background: 'var(--bg-light)', color: 'var(--text-main)', border: '1px solid var(--border-color)', boxShadow: 'none' }}
+            style={{ background: 'var(--bg-light)', color: 'var(--text-main)', border: '1px solid var(--border-color)', boxShadow: 'none', width: isMobileMenuOpen ? '100%' : 'auto' }}
           >
             Logout
           </button>
         ) : (
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <Link to="/login" className="btn" style={{ background: 'var(--bg-light)', border: '1px solid var(--border-color)', color: 'var(--text-main)' }}>
+          <div style={{ display: 'flex', gap: '0.5rem', width: isMobileMenuOpen ? '100%' : 'auto', flexDirection: isMobileMenuOpen ? 'column' : 'row' }}>
+            <Link to="/login" className="btn" style={{ background: 'var(--bg-light)', border: '1px solid var(--border-color)', color: 'var(--text-main)' }} onClick={() => setIsMobileMenuOpen(false)}>
               Log In
             </Link>
-            <Link to="/signup" className="btn btn-primary">
+            <Link to="/signup" className="btn btn-primary" onClick={() => setIsMobileMenuOpen(false)}>
               Sign Up
             </Link>
           </div>

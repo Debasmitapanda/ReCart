@@ -13,10 +13,10 @@ export default function MyProducts() {
   return (
     <div className="page-wrapper">
       <Navbar />
-      <div style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
+      <div className="dashboard-layout">
         <DashboardSidebar role="seller" />
         
-        <main className="main-content" style={{ flex: 1, padding: '2rem' }}>
+        <main className="main-content" style={{ padding: '2rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
             <h1 className="heading-primary" style={{ margin: 0 }}>My Products</h1>
             <a href="/products/add" className="btn btn-primary">
@@ -24,7 +24,7 @@ export default function MyProducts() {
             </a>
           </div>
           
-          <div style={{ background: 'var(--bg-white)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', overflow: 'hidden', border: '1px solid var(--border-color)' }}>
+          <div style={{ background: 'var(--bg-white)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', overflowX: 'auto', border: '1px solid var(--border-color)' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
               <thead>
                 <tr style={{ background: 'var(--bg-light)', color: 'var(--text-muted)', borderBottom: '1px solid var(--border-color)' }}>

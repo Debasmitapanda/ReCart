@@ -411,3 +411,84 @@ h2, .heading-secondary {
 .animate-float {
   animation: float 4s ease-in-out infinite;
 }
+
+/* Responsive Layouts */
+.dashboard-layout {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+  
+  .dashboard-sidebar {
+    width: 100% !important;
+    height: auto !important;
+    position: static !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .dashboard-sidebar nav {
+    flex-direction: row !important;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+
+  .dashboard-sidebar nav a {
+    white-space: nowrap;
+  }
+
+  .navbar {
+    flex-wrap: wrap;
+  }
+  
+  .nav-links {
+    display: none !important; /* Will be toggled by React state */
+  }
+
+  .nav-links.mobile-open {
+    display: flex !important;
+    width: 100%;
+    flex-direction: column;
+    margin-top: 1rem;
+    align-items: flex-start;
+  }
+
+  .mobile-menu-btn {
+    display: block;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-main);
+  }
+
+  .cart-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .footer-links {
+    align-items: center;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-menu-btn {
+    display: none;
+  }
+}

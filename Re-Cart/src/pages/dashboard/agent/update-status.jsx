@@ -27,9 +27,9 @@ export default function UpdateStatus() {
   return (
     <div className="page-wrapper">
       <Navbar />
-      <div style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
+      <div className="dashboard-layout">
         <DashboardSidebar role="agent" />
-        <main className="main-content" style={{ flex: 1, padding: '2rem' }}>
+        <main className="main-content" style={{ padding: '2rem' }}>
           <h1 className="heading-primary" style={{ marginBottom: '2rem' }}>Update Delivery Status</h1>
           
           <div style={{ background: 'var(--bg-white)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', padding: '2rem', maxWidth: '600px', border: '1px solid var(--border-color)' }}>

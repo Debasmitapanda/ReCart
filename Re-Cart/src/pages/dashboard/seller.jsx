@@ -8,9 +8,9 @@ export default function SellerDashboard() {
   return (
     <div className="page-wrapper">
       <Navbar />
-      <div style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
+      <div className="dashboard-layout">
         <DashboardSidebar role="seller" />
-        <main className="main-content" style={{ flex: 1, padding: '2rem' }}>
+        <main className="main-content" style={{ padding: '2rem' }}>
           <h1 className="heading-primary">Seller Dashboard</h1>
           <UserProfile role="seller" />
           <DashboardNotifications />

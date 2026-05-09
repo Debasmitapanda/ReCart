@@ -13,12 +13,12 @@ export default function AssignedDeliveries() {
   return (
     <div className="page-wrapper">
       <Navbar />
-      <div style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
+      <div className="dashboard-layout">
         <DashboardSidebar role="agent" />
-        <main className="main-content" style={{ flex: 1, padding: '2rem' }}>
+        <main className="main-content" style={{ padding: '2rem' }}>
           <h1 className="heading-primary" style={{ marginBottom: '2rem' }}>Assigned Deliveries</h1>
           
-          <div style={{ background: 'var(--bg-white)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', overflow: 'hidden', border: '1px solid var(--border-color)' }}>
+          <div style={{ background: 'var(--bg-white)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', overflowX: 'auto', border: '1px solid var(--border-color)' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
               <thead>
                 <tr style={{ background: 'var(--bg-light)', color: 'var(--text-muted)', borderBottom: '1px solid var(--border-color)' }}>

@@ -28,12 +28,12 @@ export default function AdminDashboard() {
   return (
     <div className="page-wrapper">
       <Navbar />
-      <div style={{ display: 'flex', flexDirection: 'row', flex: 1 }}>
+      <div className="dashboard-layout">
         {/* Sidebar */}
         <DashboardSidebar role="admin" />
 
         {/* Main Content */}
-        <main className="main-content" style={{ flex: 1, padding: '2rem' }}>
+        <main className="main-content" style={{ padding: '2rem' }}>
           <h1 className="heading-primary">Admin Dashboard</h1>
 
         {/* Analytics Overview */}
