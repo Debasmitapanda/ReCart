@@ -72,5 +72,10 @@ app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/upload', uploadRoutes);
 
+// Base route for health check
+app.get('/', (req, res) => {
+  res.send('Re-Cart API is running...');
+});
+
 // Error Handler
 app.use(errorHandler);
