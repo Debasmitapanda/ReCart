@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../api/axios.js';
 
 export default function WishlistButton({ productId }) {
   const handleWishlist = async () => {

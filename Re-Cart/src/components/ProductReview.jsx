@@ -1,6 +1,6 @@
 // components/ProductReviews.js
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../api/axios.js';
 
 export default function ProductReviews({ productId }) {
   const [reviews, setReviews] = useState([]);

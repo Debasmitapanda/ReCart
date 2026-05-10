@@ -1,7 +1,7 @@
 // pages/payment/[orderId].js
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../api/axios.js';
 import { loadStripe } from '@stripe/stripe-js';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);

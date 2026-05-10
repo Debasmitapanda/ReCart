@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../api/axios.js';
 import { useAuth } from '../context/AuthContext';
 
 export default function UserProfile({ role }) {

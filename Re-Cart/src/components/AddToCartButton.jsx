@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../api/axios.js';
 
 export default function AddToCartButton({ productId }) {
   const handleCart = async () => {
