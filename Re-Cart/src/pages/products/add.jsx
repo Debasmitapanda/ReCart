@@ -50,8 +50,13 @@ export default function AddProduct() {
 
       const productRes = await apiClient.post('/api/products', newProduct);
       
+      const addedProduct = {
+        ...productRes.data,
+        localImage: form.image ? URL.createObjectURL(form.image) : null
+      };
+
       // Save globally to context
-      addProduct(productRes.data);
+      addProduct(addedProduct);
       
       alert('Product added successfully!');
       

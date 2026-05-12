@@ -55,7 +55,7 @@ export default function MyProducts() {
                     <tr key={productId} style={{ borderBottom: index !== sellerProducts.length - 1 ? '1px solid var(--border-color)' : 'none' }}>
                       <td style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                         <img 
-                          src={(product.images && product.images.length > 0) ? product.images[0] : (product.image || 'https://via.placeholder.com/150?text=No+Image')} 
+                          src={product.localImage || ((product.images && product.images.length > 0) ? product.images[0] : (product.image || 'https://via.placeholder.com/150?text=No+Image'))} 
                           alt={product.name} 
                           style={{ width: '50px', height: '50px', borderRadius: 'var(--radius-md)', objectFit: 'cover' }}
                         />

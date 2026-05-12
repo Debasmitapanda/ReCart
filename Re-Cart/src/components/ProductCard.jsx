@@ -10,7 +10,7 @@ export default function ProductCard({ product }) {
     <div className="product-card" style={{ position: 'relative' }}>
       <div style={{ position: 'relative' }}>
         <img
-          src={(product.images && product.images.length > 0) ? product.images[0] : 'https://via.placeholder.com/300?text=No+Image'}
+          src={product.localImage || ((product.images && product.images.length > 0) ? product.images[0] : 'https://via.placeholder.com/300?text=No+Image')}
           alt={product.name}
           className="product-image"
         />
