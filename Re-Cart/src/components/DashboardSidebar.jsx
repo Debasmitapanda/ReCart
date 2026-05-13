@@ -1,7 +1,7 @@
 // components/DashboardSidebar.js
 import { Link } from 'react-router-dom';
 
-export default function DashboardSidebar({ role }) {
+export default function DashboardSidebar({ role, isOpen, onClose }) {
   const links = {
     buyer: [
       { name: 'Dashboard', href: '/dashboard/buyer' },
@@ -34,7 +34,18 @@ export default function DashboardSidebar({ role }) {
   };
 
   return (
-    <aside className="dashboard-sidebar" style={{ width: '250px', background: 'var(--bg-white)', padding: '1.5rem', borderRight: '1px solid var(--border-color)', height: 'calc(100vh - 73px)', position: 'sticky', top: '73px' }}>
+    <aside 
+      className={`dashboard-sidebar ${isOpen ? 'sidebar-open' : ''}`}
+      style={{ 
+        width: '250px', 
+        background: 'var(--bg-white)', 
+        padding: '1.5rem', 
+        borderRight: '1px solid var(--border-color)', 
+        height: 'calc(100vh - 73px)', 
+        position: 'sticky', 
+        top: '73px'
+      }}
+    >
       <h2 className="heading-secondary" style={{ textTransform: 'capitalize', marginBottom: '1.5rem', fontSize: '1.25rem' }}>{role} Panel</h2>
       <nav style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {links[role]?.map((link) => (
@@ -42,7 +53,8 @@ export default function DashboardSidebar({ role }) {
             key={link.name}
             to={link.href}
             className="nav-link"
-            style={{ padding: '0.5rem', borderRadius: 'var(--radius-md)', display: 'block' }}
+            style={{ padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', display: 'block' }}
+            onClick={() => onClose && onClose()}
           >
             {link.name}
           </Link>

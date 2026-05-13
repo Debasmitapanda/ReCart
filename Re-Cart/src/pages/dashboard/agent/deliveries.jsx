@@ -1,8 +1,10 @@
 import DashboardSidebar from '../../../components/DashboardSidebar';
 import Navbar from '../../../components/Navbar';
 import { useOrders } from '../../../context/OrdersContext';
+import { useState } from 'react';
 
 export default function AssignedDeliveries() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { orders, updateOrderStatus } = useOrders();
 
   const handleStatusChange = (orderId, newStatus) => {
@@ -14,8 +16,19 @@ export default function AssignedDeliveries() {
     <div className="page-wrapper">
       <Navbar />
       <div className="dashboard-layout">
-        <DashboardSidebar role="agent" />
-        <main className="main-content" style={{ padding: '2rem' }}>
+        <button 
+          className="sidebar-toggle-mobile"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          style={{ display: 'none' }}
+          aria-label="Toggle Sidebar"
+        >
+          {isSidebarOpen ? '✕' : '☰'}
+        </button>
+
+        <div style={{ position: 'relative' }}>
+          <DashboardSidebar role="agent" isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+        </div>
+        <main className="main-content" style={{ padding: '2rem', flex: 1, width: '100%' }}>
           <h1 className="heading-primary" style={{ marginBottom: '2rem' }}>Assigned Deliveries</h1>
           
           <div style={{ background: 'var(--bg-white)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', overflowX: 'auto', border: '1px solid var(--border-color)' }}>

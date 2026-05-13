@@ -1,8 +1,10 @@
 // pages/dashboard/admin.js
 import DashboardSidebar from '../../components/DashboardSidebar';
 import Navbar from '../../components/Navbar';
+import { useState } from 'react';
 
 export default function AdminDashboard() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const dummyUsers = [
     { id: 1, name: 'John Doe', role: 'Seller', status: 'Active' },
     { id: 2, name: 'Jane Smith', role: 'Buyer', status: 'Blocked' },
@@ -29,11 +31,21 @@ export default function AdminDashboard() {
     <div className="page-wrapper">
       <Navbar />
       <div className="dashboard-layout">
-        {/* Sidebar */}
-        <DashboardSidebar role="admin" />
+        <button 
+          className="sidebar-toggle-mobile"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          style={{ display: 'none' }}
+          aria-label="Toggle Sidebar"
+        >
+          {isSidebarOpen ? '✕' : '☰'}
+        </button>
+
+        <div style={{ position: 'relative' }}>
+          <DashboardSidebar role="admin" isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+        </div>
 
         {/* Main Content */}
-        <main className="main-content" style={{ padding: '2rem' }}>
+        <main className="main-content" style={{ padding: '2rem', flex: 1, width: '100%' }}>
           <h1 className="heading-primary">Admin Dashboard</h1>
 
         {/* Analytics Overview */}

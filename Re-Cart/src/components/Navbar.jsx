@@ -35,39 +35,28 @@ export default function Navbar() {
   }, [darkMode]);
 
   return (
-    <nav className="navbar" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center' }}>
-      {/* Left: Logo and Mobile Toggle */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flex: isMobileMenuOpen ? '1 1 100%' : '0 1 auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', width: isMobileMenuOpen ? '100%' : 'auto', alignItems: 'center' }}>
-          <Link to="/" className="nav-brand animate-gradient" style={{ fontWeight: 900, background: 'linear-gradient(45deg, var(--primary), #8B5CF6, var(--secondary), var(--primary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: '1.75rem' }}>
-            Re-Cart
-          </Link>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', display: isMobileMenuOpen ? 'flex' : 'none' }}>
-            <button onClick={() => setDarkMode(!darkMode)} className="mobile-menu-btn" style={{ background: 'transparent', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0.2rem' }}>
-              <span style={{ fontSize: '1.2rem', lineHeight: '1' }}>{darkMode ? '🌙' : '☀️'}</span>
-              <span style={{ fontSize: '0.5rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)' }}>Mode</span>
-            </button>
-            <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} aria-label="Toggle Menu">
-              ☰
-            </button>
-          </div>
-        </div>
+    <nav className="navbar" style={{ position: 'relative', zIndex: 70 }}>
+      {/* Left: Logo */}
+      <div style={{ display: 'flex', alignItems: 'center', flex: '0 1 auto', minWidth: 0 }}>
+        <Link to="/" className="nav-brand animate-gradient" style={{ fontWeight: 900, background: 'linear-gradient(45deg, var(--primary), #8B5CF6, var(--secondary), var(--primary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: '1.75rem', whiteSpace: 'nowrap' }}>
+          Re-Cart
+        </Link>
       </div>
 
-      {/* Middle: Navigation Links */}
-      <div className={`nav-links ${isMobileMenuOpen ? 'mobile-open' : ''}`} style={{ flex: '1', justifyContent: 'center', display: isMobileMenuOpen ? 'flex' : 'flex' }}>
+      {/* Middle: Navigation Links - Hidden on mobile, shown when menu opens */}
+    <div className={`nav-links nav-primary ${isMobileMenuOpen ? 'mobile-open' : ''}`} style={{ flex: '1 1 auto', justifyContent: 'center', minHeight: 'auto', order: 'auto', overflow: 'auto', flexWrap: 'wrap' }}>
         {user && (
           <>
             <div 
-              style={{ position: 'relative' }}
-              onMouseEnter={() => setShowDropdown(true)}
-              onMouseLeave={() => setShowDropdown(false)}
+              style={{ position: 'relative', width: isMobileMenuOpen ? '100%' : 'auto' }}
+              onMouseEnter={() => !isMobileMenuOpen && setShowDropdown(true)}
+              onMouseLeave={() => !isMobileMenuOpen && setShowDropdown(false)}
             >
-              <Link to="/products" className="nav-link" style={{ display: 'inline-block', padding: '0.5rem 1rem', fontWeight: 600 }}>
+              <Link to="/products" className="nav-link" style={{ padding: '0.5rem 1rem', fontWeight: 600 }}>
                 Products
               </Link>
               
-              {showDropdown && (
+              {showDropdown && !isMobileMenuOpen && (
                 <div style={{
                   position: 'absolute',
                   top: '100%',
@@ -90,7 +79,7 @@ export default function Navbar() {
                       to={`/products?category=${cat}`} 
                       className="nav-link" 
                       style={{ padding: '0.5rem 1rem', display: 'block', borderRadius: 'var(--radius-sm)' }}
-                      onClick={() => setShowDropdown(false)}
+                      onClick={() => { setShowDropdown(false); setIsMobileMenuOpen(false); }}
                     >
                       {cat}
                     </Link>
@@ -100,14 +89,14 @@ export default function Navbar() {
                     to="/products" 
                     className="nav-link" 
                     style={{ padding: '0.5rem 1rem', display: 'block', fontWeight: 'bold' }}
-                    onClick={() => setShowDropdown(false)}
+                    onClick={() => { setShowDropdown(false); setIsMobileMenuOpen(false); }}
                   >
                     All Products
                   </Link>
                 </div>
               )}
             </div>
-            <Link to="/cart" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600, padding: '0.5rem 1rem' }} onClick={() => setIsMobileMenuOpen(false)}>
+            <Link to="/cart" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600, padding: '0.5rem 1rem', width: isMobileMenuOpen ? '100%' : 'auto' }} onClick={() => setIsMobileMenuOpen(false)}>
               Cart
               {cartCount > 0 && (
                 <span style={{ 
@@ -133,12 +122,13 @@ export default function Navbar() {
         )}
       </div>
 
-      {/* Right: Auth Buttons */}
-      <div className={`nav-links ${isMobileMenuOpen ? 'mobile-open' : ''}`} style={{ flex: '0 1 auto', justifyContent: 'flex-end', marginTop: isMobileMenuOpen ? '1rem' : '0', alignItems: 'center' }}>
+      {/* Right: Auth Buttons & Controls - Hidden on mobile until menu opens */}
+      <div className={`nav-links nav-actions ${isMobileMenuOpen ? 'mobile-open' : ''}`} style={{ flex: isMobileMenuOpen ? '1 1 100%' : '0 1 auto', justifyContent: isMobileMenuOpen ? 'flex-start' : 'flex-end', marginTop: isMobileMenuOpen ? '1rem' : '0', alignItems: isMobileMenuOpen ? 'stretch' : 'center', gap: '1rem', width: isMobileMenuOpen ? '100%' : 'auto', overflow: 'hidden' }}>
+        {/* Dark Mode Toggle - Always visible on desktop, shown in menu on mobile */}
         <button
           onClick={() => setDarkMode(!darkMode)}
           className="btn"
-          style={{ display: isMobileMenuOpen ? 'none' : 'flex', flexDirection: 'column', alignItems: 'center', padding: '0.2rem 0.6rem', background: 'transparent', boxShadow: 'none', border: 'none' }}
+          style={{ display: isMobileMenuOpen ? 'flex' : 'flex', flexDirection: 'column', alignItems: 'center', padding: '0.2rem 0.6rem', background: 'transparent', boxShadow: 'none', border: 'none' }}
         >
           <span style={{ fontSize: '1.2rem', lineHeight: '1' }}>{darkMode ? '🌙' : '☀️'}</span>
           <span style={{ fontSize: '0.55rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)', marginTop: '2px' }}>Mode</span>
@@ -148,21 +138,31 @@ export default function Navbar() {
           <button
             onClick={handleLogout}
             className="btn btn-secondary"
-            style={{ whiteSpace: 'nowrap', background: 'var(--bg-light)', color: 'var(--text-main)', border: '1px solid var(--border-color)', boxShadow: 'none', width: isMobileMenuOpen ? '100%' : 'auto' }}
+            style={{ whiteSpace: 'nowrap', background: 'var(--bg-light)', color: 'var(--text-main)', border: '1px solid var(--border-color)', boxShadow: 'none', width: isMobileMenuOpen ? '100%' : 'auto', padding: '0.6rem 1.5rem' }}
           >
             Logout
           </button>
         ) : (
-          <div style={{ display: 'flex', gap: '1rem', width: isMobileMenuOpen ? '100%' : 'auto', flexDirection: isMobileMenuOpen ? 'column' : 'row' }}>
-            <Link to="/login" className="btn" style={{ whiteSpace: 'nowrap', background: 'transparent', color: 'var(--text-main)', fontWeight: 600, border: '1px solid var(--border-color)', padding: '0.6rem 1.5rem' }} onClick={() => setIsMobileMenuOpen(false)}>
+          <div style={{ display: 'flex', gap: '1rem', width: 'auto', flexWrap: 'wrap', flexDirection: 'row', alignItems: 'center' }}>
+            <Link to="/login" className="btn" style={{ whiteSpace: 'nowrap', background: 'transparent', color: 'var(--text-main)', fontWeight: 600, border: '1px solid var(--border-color)', padding: '0.6rem 1rem', width: 'auto', textAlign: 'center' }} onClick={() => setIsMobileMenuOpen(false)}>
               Log In
             </Link>
-            <Link to="/signup" className="btn btn-primary" style={{ whiteSpace: 'nowrap', fontWeight: 600, padding: '0.6rem 1.5rem', boxShadow: 'var(--shadow-md)' }} onClick={() => setIsMobileMenuOpen(false)}>
+            <Link to="/signup" className="btn btn-primary" style={{ whiteSpace: 'nowrap', fontWeight: 600, padding: '0.6rem 1rem', width: 'auto', boxShadow: 'var(--shadow-md)', textAlign: 'center' }} onClick={() => setIsMobileMenuOpen(false)}>
               Sign Up
             </Link>
           </div>
         )}
       </div>
+
+      {/* Mobile Menu Toggle Button - Always visible on mobile, top right */}
+      <button 
+        className="mobile-menu-btn" 
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+        aria-label="Toggle Menu"
+        style={{ flex: '0 0 auto', marginLeft: 'auto', order: 2, zIndex: 60 }}
+      >
+        {isMobileMenuOpen ? '✕' : '☰'}
+      </button>
     </nav>
   );
 }

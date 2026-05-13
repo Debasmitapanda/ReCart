@@ -2,8 +2,10 @@ import Navbar from '../../../components/Navbar';
 import DashboardSidebar from '../../../components/DashboardSidebar';
 import { useOrders } from '../../../context/OrdersContext';
 import { useAuth } from '../../../context/AuthContext';
+import { useState } from 'react';
 
 export default function Earnings() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { orders } = useOrders();
   const { user } = useAuth();
   
@@ -32,9 +34,20 @@ export default function Earnings() {
     <div className="page-wrapper">
       <Navbar />
       <div className="dashboard-layout">
-        <DashboardSidebar role="seller" />
+        <button 
+          className="sidebar-toggle-mobile"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          style={{ display: 'none' }}
+          aria-label="Toggle Sidebar"
+        >
+          {isSidebarOpen ? '✕' : '☰'}
+        </button>
+
+        <div style={{ position: 'relative' }}>
+          <DashboardSidebar role="seller" isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+        </div>
         
-        <main className="main-content" style={{ padding: '2rem' }}>
+        <main className="main-content" style={{ padding: '2rem', flex: 1, width: '100%' }}>
           <h1 className="heading-primary">Your Earnings</h1>
           
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>

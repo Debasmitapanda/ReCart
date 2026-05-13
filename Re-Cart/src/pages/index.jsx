@@ -1,14 +1,65 @@
+import { useEffect, useMemo, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
 import { useProducts } from '../context/ProductsContext';
-import { useAuth } from '../context/AuthContext';
-import { Link } from 'react-router-dom';
+
+function getProductTimestamp(product) {
+  const dateString = product.createdAt || product.updatedAt;
+  const dateValue = Date.parse(dateString);
+  if (!Number.isNaN(dateValue)) return dateValue;
+  if (product._id || product.id) {
+    const idValue = (product._id || product.id).toString();
+    if (idValue.length >= 8) {
+      return parseInt(idValue.slice(0, 8), 16) * 1000;
+    }
+  }
+  return 0;
+}
 
 export default function Home() {
   const { products } = useProducts();
-  const { user } = useAuth();
-  const sampleProducts = products.slice(0, 3);
+  const [pageSize, setPageSize] = useState(9);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const updateMedia = ({ matches }) => {
+      setIsMobile(matches);
+      setPageSize(matches ? 6 : 9);
+      setCurrentPage(1);
+    };
+
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    updateMedia(mediaQuery);
+    mediaQuery.addEventListener('change', updateMedia);
+
+    return () => {
+      mediaQuery.removeEventListener('change', updateMedia);
+    };
+  }, []);
+
+  const sortedProducts = useMemo(() => {
+    return [...products].sort((a, b) => getProductTimestamp(b) - getProductTimestamp(a));
+  }, [products]);
+
+  const pageCount = Math.max(1, Math.ceil(sortedProducts.length / pageSize));
+  const visibleProducts = sortedProducts.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+  const showPrev = currentPage > 1;
+  const showNext = currentPage < pageCount;
+
+  const goPage = (page) => {
+    setCurrentPage(Math.min(Math.max(page, 1), pageCount));
+  };
+
+  const getPageButtons = () => {
+    if (!isMobile || pageCount <= 2) {
+      return Array.from({ length: pageCount }, (_, index) => index + 1);
+    }
+
+    return [1, 2];
+  };
 
   return (
     <div className="page-wrapper">
@@ -34,10 +85,48 @@ export default function Home() {
           <p className="text-muted" style={{ fontSize: '1.2rem', marginBottom: '0' }}>Discover premium second-hand goods.</p>
         </div>
         <div className="product-grid">
-          {products.map((p) => (
+          {visibleProducts.map((p) => (
             <ProductCard key={p.id || p._id} product={p} />
           ))}
         </div>
+
+        {sortedProducts.length > pageSize && (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.75rem', flexWrap: 'nowrap', overflowX: 'auto', marginTop: '2rem' }}>
+            <button
+              onClick={() => goPage(currentPage - 1)}
+              className="btn"
+              disabled={!showPrev}
+              style={{ padding: '0.85rem 1.25rem', minWidth: '90px', opacity: showPrev ? 1 : 0.5, whiteSpace: 'nowrap' }}
+            >
+              Prev
+            </button>
+
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'nowrap', alignItems: 'center', overflowX: 'auto' }}>
+              {getPageButtons().map((page) => (
+                <button
+                  key={page}
+                  onClick={() => goPage(page)}
+                  className={`btn ${currentPage === page ? 'btn-primary' : ''}`}
+                  style={{ padding: '0.75rem 1rem', minWidth: '40px', whiteSpace: 'nowrap' }}
+                >
+                  {page}
+                </button>
+              ))}
+              {isMobile && pageCount > 2 && (
+                <span style={{ display: 'inline-flex', alignItems: 'center', minWidth: '24px', justifyContent: 'center' }}>...</span>
+              )}
+            </div>
+
+            <button
+              onClick={() => goPage(currentPage + 1)}
+              className="btn"
+              disabled={!showNext}
+              style={{ padding: '0.85rem 1.25rem', minWidth: '90px', opacity: showNext ? 1 : 0.5 }}
+            >
+              Next
+            </button>
+          </div>
+        )}
       </main>
       <Footer />
     </div>
