@@ -44,10 +44,13 @@ Buysell/
 │   │   ├── services/         # External services integration
 │   │   └── server.js         # Entry point for the backend server
 │   ├── .env                  # Backend environment variables
+│   ├── .env.example          # Example backend environment file
 │   └── package.json          # Backend dependencies & scripts
 │
 ├── Re-Cart/                  # React + Vite Frontend
 │   ├── public/               # Static assets
+│   ├── .env                  # Frontend environment variables
+│   ├── .env.example          # Example frontend environment file
 │   ├── src/
 │   │   ├── api/              # Axios configuration and API calls
 │   │   ├── assets/           # Images, icons, and static files
@@ -64,4 +67,24 @@ Buysell/
 │
 └── README.md                 # Project documentation
 ```
+<<<<<<< Updated upstream
 Hosted link - https://recart-mgtd.onrender.com
+=======
+
+Environment setup
+-----------------
+
+Create local `.env` files from the example files and add your real Stripe test keys there.
+
+- `backend/.env`
+  - `STRIPE_SECRET_KEY=sk_test_...`
+  - `STRIPE_PUBLISHABLE_KEY=pk_test_...`
+
+- `Re-Cart/.env`
+  - `VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...`
+  - `VITE_BACKEND_URL=http://localhost:5000`
+
+Do not commit `.env` files. Use `.env.example` as the template.
+
+Hosted link - https://recart-mgtd.onrender.com
+>>>>>>> Stashed changes

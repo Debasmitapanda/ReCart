@@ -26,24 +26,29 @@ export default function Checkout() {
     }
 
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
+      const createdOrders = [];
+
       for (const item of cartItems) {
         const orderPayload = {
           productId: item.id || item._id,
           deliveryAddress: form.address,
-          amount: item.price * item.qty,
+          amount: item.price * (item.qty || 1),
           deliveryCharge: item.deliveryCharge || 0
         };
-        await addOrder(orderPayload);
+        const createdOrder = await addOrder(orderPayload);
+        createdOrders.push(createdOrder);
       }
 
-      console.log('Order placed locally:', { ...form, items: cartItems });
       clearCart();
-      alert('Order placed successfully! Redirecting to your orders...');
-      navigate('/orders');
-      
+
+      if (form.paymentMethod === 'card' && createdOrders.length > 0) {
+        const firstOrderId = createdOrders[0]._id;
+        alert('Order placed. Redirecting to secure Stripe payment...');
+        navigate(`/payment/${firstOrderId}`);
+      } else {
+        alert('Order placed successfully! Redirecting to your orders...');
+        navigate('/orders');
+      }
     } catch (error) {
       console.error('Error placing order:', error);
       alert('Error placing order.');

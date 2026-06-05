@@ -1,9 +1,11 @@
 // pages/orders.js
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { useOrders } from '../context/OrdersContext';
 
 export default function Orders() {
   const { orders } = useOrders();
+  const navigate = useNavigate();
 
   return (
     <div className="page-wrapper">
@@ -31,20 +33,32 @@ export default function Orders() {
                     <p className="text-muted">Order ID: {order._id || order.id}</p>
                     <p className="text-muted">Date: {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : order.date}</p>
                     <p className="text-muted">Amount: <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>₹{order.amount}</span></p>
+                    <p className="text-muted">Payment: <strong>{order.paymentStatus || 'Pending'}</strong></p>
                   </div>
                 </div>
-                <span
-                  style={{
-                    padding: '0.5rem 1rem',
-                    borderRadius: 'var(--radius-full)',
-                    fontWeight: '600',
-                    fontSize: '0.9rem',
-                    backgroundColor: order.status === 'Delivered' ? '#D1FAE5' : order.status === 'Out for Delivery' ? '#DBEAFE' : '#FEF3C7',
-                    color: order.status === 'Delivered' ? '#059669' : order.status === 'Out for Delivery' ? '#2563EB' : '#D97706'
-                  }}
-                >
-                  {order.status}
-                </span>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.75rem' }}>
+                  <span
+                    style={{
+                      padding: '0.5rem 1rem',
+                      borderRadius: 'var(--radius-full)',
+                      fontWeight: '600',
+                      fontSize: '0.9rem',
+                      backgroundColor: order.status === 'Delivered' ? '#D1FAE5' : order.status === 'Out for Delivery' ? '#DBEAFE' : '#FEF3C7',
+                      color: order.status === 'Delivered' ? '#059669' : order.status === 'Out for Delivery' ? '#2563EB' : '#D97706'
+                    }}
+                  >
+                    {order.status}
+                  </span>
+                  {order.paymentStatus === 'Pending' && (
+                    <button
+                      onClick={() => navigate(`/payment/${order._id}`)}
+                      className="btn btn-primary"
+                      style={{ padding: '0.6rem 1rem' }}
+                    >
+                      Pay Now
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
           </div>

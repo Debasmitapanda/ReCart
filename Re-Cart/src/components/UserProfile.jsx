@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from '../api/axios.js';
 import { useAuth } from '../context/AuthContext';
+import { useOrders } from '../context/OrdersContext';
 
 export default function UserProfile({ role }) {
   const { user: authUser, login } = useAuth();
@@ -30,7 +31,7 @@ export default function UserProfile({ role }) {
       });
     }
   }, [authUser]);
-
+  const { refreshOrders } = useOrders();
   const [editForm, setEditForm] = useState({
     name: user.name,
     email: user.email
@@ -38,14 +39,17 @@ export default function UserProfile({ role }) {
 
   const handleSave = async () => {
     try {
-      const { data } = await axios.put('/api/users/profile', 
+      const { data } = await axios.put('/api/users/profile',
         { name: editForm.name, email: editForm.email },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
-      
+
       // Update global AuthContext state so changes persist locally during session
       login(data, localStorage.getItem('token'));
-      
+
+      // Refresh orders to reflect updated name
+      if (typeof refreshOrders === 'function') refreshOrders();
+
       setIsEditing(false);
       alert('Profile updated successfully!');
     } catch (error) {
@@ -53,6 +57,7 @@ export default function UserProfile({ role }) {
       alert(error.response?.data?.message || 'Failed to update profile');
     }
   };
+
 
   return (
     <div style={{

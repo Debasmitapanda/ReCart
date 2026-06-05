@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 
 export default function Navbar() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -12,9 +13,11 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const { cartItems } = useCart();
+  const { wishlistItems } = useWishlist();
   const navigate = useNavigate();
 
   const cartCount = cartItems ? cartItems.reduce((total, item) => total + item.qty, 0) : 0;
+  const wishlistCount = wishlistItems ? wishlistItems.length : 0;
 
   const categories = ['Electronics', 'Furniture', 'Vehicles', 'Fashion', 'Books'];
 
@@ -109,6 +112,23 @@ export default function Navbar() {
                   textAlign: 'center'
                 }}>
                   {cartCount}
+                </span>
+              )}
+            </Link>
+            <Link to="/wishlist" className="nav-link" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 600, padding: '0.5rem 1rem', width: isMobileMenuOpen ? '100%' : 'auto' }} onClick={() => setIsMobileMenuOpen(false)}>
+              <span aria-hidden="true">♥</span>
+              Wishlist
+              {wishlistCount > 0 && (
+                <span style={{ 
+                  background: '#EF4444', 
+                  color: 'white', 
+                  fontSize: '0.75rem', 
+                  padding: '0.1rem 0.5rem', 
+                  borderRadius: '1rem',
+                  fontWeight: 'bold',
+                  textAlign: 'center'
+                }}>
+                  {wishlistCount}
                 </span>
               )}
             </Link>
