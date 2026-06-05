@@ -48,8 +48,7 @@ export default function Navbar() {
 
       {/* Middle: Navigation Links - Hidden on mobile, shown when menu opens */}
     <div className={`nav-links nav-primary ${isMobileMenuOpen ? 'mobile-open' : ''}`} style={{ flex: '1 1 auto', justifyContent: 'center', minHeight: 'auto', order: 'auto', overflow: 'auto', flexWrap: 'wrap' }}>
-        {user && (
-          <>
+        
             <div 
               style={{ position: 'relative', width: isMobileMenuOpen ? '100%' : 'auto' }}
               onMouseEnter={() => !isMobileMenuOpen && setShowDropdown(true)}
@@ -132,14 +131,16 @@ export default function Navbar() {
                 </span>
               )}
             </Link>
-            <Link to="/orders" className="nav-link" style={{ fontWeight: 600, padding: '0.5rem 1rem' }} onClick={() => setIsMobileMenuOpen(false)}>
-              Orders
-            </Link>
-            <Link to={`/dashboard/${user.role}`} className="nav-link" style={{ fontWeight: 600, padding: '0.5rem 1rem' }} onClick={() => setIsMobileMenuOpen(false)}>
-              Dashboard
-            </Link>
-          </>
-        )}
+            {user && (
+              <>
+                <Link to="/orders" className="nav-link" style={{ fontWeight: 600, padding: '0.5rem 1rem' }} onClick={() => setIsMobileMenuOpen(false)}>
+                  Orders
+                </Link>
+                <Link to={`/dashboard/${user.role}`} className="nav-link" style={{ fontWeight: 600, padding: '0.5rem 1rem' }} onClick={() => setIsMobileMenuOpen(false)}>
+                  Dashboard
+                </Link>
+              </>
+            )}
       </div>
 
       {/* Right: Auth Buttons & Controls - Hidden on mobile until menu opens */}
