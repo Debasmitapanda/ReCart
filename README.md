@@ -5,7 +5,7 @@ Re-Cart is a full-stack MERN (MongoDB, Express, React, Node.js) application desi
 ## Features
 
 - **User Authentication**: Secure signup and login using JWT (JSON Web Tokens)
-- **Role-Based Access**: Specialized dashboards for different user roles (e.g., Buyer, Seller, Agent).
+- **Role-Based Access**: Specialized dashboards for different user roles (e.g., Buyer, Seller, Agent)
 - **Real-Time Communication**: Live updates and notifications integrated with Socket.io.
 - **Product Management**: Sellers can add, edit, and manage their product listings with images uploaded via Cloudinary.
 - **Payment Gateway**: Secure checkout and payments processed by Stripe.
