@@ -65,7 +65,7 @@ Buysell/
 │   ├── package.json          # Frontend dependencies & scripts
 │   └── vite.config.js        # Vite configuration
 │
-└── README.md                 # Project documentation
+└── README.md                 # Project documention
 ```
 <<<<<<< Updated upstream
 Hosted link - https://recart-mgtd.onrender.com
