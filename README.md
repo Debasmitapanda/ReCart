@@ -84,7 +84,7 @@ Create local `.env` files from the example files and add your real Stripe test k
   - `VITE_STRIPE_PUBLISHABLE_KEY=pk_test_...`
   - `VITE_BACKEND_URL=http://localhost:5000`
 
-Do not commit `.env` files. Use `.env.example` as the template.
+Do not commit `.env` files. Use `.env.example` as the template
 
 Hosted link - https://recart-mgtd.onrender.com
 >>>>>>> Stashed changes
